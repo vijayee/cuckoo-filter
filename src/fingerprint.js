@@ -1,20 +1,34 @@
+'use strict'
 const util = require('./util')
 let _fp = new WeakMap()
-const fpSize = 2
 module.exports = class Fingerprint {
-  constructor (buf) {
-    if (!Buffer.isBuffer(buf)) {
-      throw new TypeError("Invalid Buffer")
+  constructor (buf, fpSize) {
+    if (!Buffer.isBuffer(buf) && typeof buf === 'object') {
+      if (buf.fp) {
+        _fp.set(this, buf.fp)
+      } else {
+        throw new TypeError('Invalid Fingerprint')
+      }
+    } else {
+      if (!fpSize) {
+        fpSize = 2
+      }
+      if (!Buffer.isBuffer(buf)) {
+        throw new TypeError("Invalid Buffer")
+      }
+      if (!Number.isInteger(fpSize) && fpSize < 64) {
+        throw new TypeError('Invalid Fingerprint Size')
+      }
+      let fnv = util.fnvHash(buf)
+      let fp = new Buffer(fpSize)
+      for (let i = 0; i < fp.length; i++) {
+        fp[ i ] = fnv[ i ]
+      }
+      if (fp.length === 0) {
+        fp[ 0 ] = 7
+      }
+      _fp.set(this, fp)
     }
-    let fnv = util.fnvHash(buf)
-    let fp = new Buffer(fpSize)
-    for (let i = 0; i < fp.length; i++) {
-      fp[ i ] = fnv[ i ]
-    }
-    if (fp.length === 0) {
-      fp[ 0 ] = 7
-    }
-    _fp.set(this, fp)
   }
 
   hash () {
@@ -28,4 +42,12 @@ module.exports = class Fingerprint {
     return Buffer.compare(fp1, fp2) === 0
   }
 
+  toJSON () {
+    let fp = _fp.get(this)
+    return { fp: fp }
+  }
+
+  static fromJSON (obj) {
+    return new Fingerprint(obj)
+  }
 }

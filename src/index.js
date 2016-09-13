@@ -1,7 +1,27 @@
 'use strict'
+//const crypto = require('crypto')
+const ScalableCuckooFilter = require('./scalable-cuckoo-filter')
 const CuckooFilter = require('./cuckoo-filter')
-module.exports = CuckooFilter
-'use strict'
+module.exports ={ 
+  CuckooFilter: CuckooFilter,
+  ScalableCuckooFilter: ScalableCuckooFilter                     
+}
+let keys =[]
+let cuckoo = new ScalableCuckooFilter(2000, 3 , 3,2)
+for(let i = 0; i < 20000; i++ ){
+  //let rand = crypto.randomBytes(36)
+  //keys.push(rand)
+  if(!cuckoo.add(i)){
+    console.log(`rejected ${i}`)
+  }
+}
+console.log(cuckoo.count)
+/*
+keys.forEach((key)=>{
+  console.log(`key ${key.toString('hex')} contained ${ cuckoo.contains(key)}`)
+})
+*/
+/*
 const Fingerprint= require('./fingerprint')
 const Bucket = require('./bucket')
 let buf = new Buffer('COSMIC POWER')
@@ -15,16 +35,16 @@ let fp3 = new Fingerprint(buf3)
 let fp4 = new Fingerprint(buf4)
 let fp5 = new Fingerprint(buf5)
 let bucket = new Bucket(4)
-let cuckoo = new CuckooFilter()
-
+let cuckoo = new CuckooFilter(1)
+//console.log(cuckoo.contains(buf5))
 console.log(cuckoo.add(buf))
 console.log(cuckoo.add(buf2))
 console.log(cuckoo.add(buf3))
 console.log(cuckoo.add(buf4))
 console.log(cuckoo.add(buf5))
-console.log(cuckoo.contains(buf5))
+
 console.log(cuckoo.remove(buf5))
-console.log(cuckoo.size)
+console.log(cuckoo.count)*/
 //console.log(cuckoo.contains(buf5))
 //console.log(cuckoo.remove(buf5))
 /*

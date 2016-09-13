@@ -25,7 +25,7 @@ function numberToBuffer (num) {
   if (isNaN(num)) {
     throw new TypeError('Invalid Number')
   }
-  let hex = number.toString(16)
+  let hex = num.toString(16)
   if (hex % 2 == 1) {
     hex = '0' + hex
   }
