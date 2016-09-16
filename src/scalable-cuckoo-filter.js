@@ -1,4 +1,7 @@
 'use strict'
+const cbor = require('cbor-js')
+const toAb = require('to-array-buffer')
+const abToB = require('arraybuffer-to-buffer')
 const CuckooFilter = require('./cuckoo-filter')
 let _filterSeries = new WeakMap()
 let _scale = new WeakMap()
@@ -10,24 +13,36 @@ module.exports = class ScalableCuckooFilter {
   constructor (cfSize, bSize, fpSize, scale) {
     if (typeof cfSize === 'object') {
       if (cfSize.cfSize) {
+        if (!Number.isInteger(cfSize.cfSize)) {
+          throw new TypeError('Invalid Cuckoo Filter Size')
+        }
         _cfSize.set(this, cfSize.cfSize)
       } else {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
       if (cfSize.bSize) {
+        if (!Number.isInteger(cfSize.bSize)) {
+          throw new TypeError('Invalid Bucket Size')
+        }
         _bSize.set(this, cfSize.bSize)
       } else {
         throw new TypeError('Invalid Bucket Size')
       }
       if (cfSize.fpSize) {
+        if (!Number.isInteger(cfSize.fpSize) || cfSize.fpSize > 64) {
+          throw new TypeError('Invalid Fingerprint Size')
+        }
         _fpSize.set(this, cfSize.fpSize)
       } else {
         throw new TypeError('Invalid Fingerprint Size')
       }
       if (cfSize.scale) {
+        if (!Number.isInteger(cfSize.scale)) {
+          throw new TypeError('Invalid Scale')
+        }
         _scale.set(this, cfSize.scale)
       } else {
-        throw new TypeError('Invalid Count')
+        throw new TypeError('Invalid Scale')
       }
       if (cfSize.filterSeries) {
         let filterSeries = cfSize.filterSeries.map((cuckoo)=> { return new CuckooFilter(cuckoo)})
@@ -54,7 +69,7 @@ module.exports = class ScalableCuckooFilter {
       if (!Number.isInteger(cfSize)) {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
-      if (!Number.isInteger(fpSize) && fpSize < 64) {
+      if (!Number.isInteger(fpSize) || fpSize > 64) {
         throw new TypeError('Invalid Fingerprint Size')
       }
       if (!Number.isInteger(bSize)) {
@@ -141,7 +156,15 @@ module.exports = class ScalableCuckooFilter {
     }
   }
 
-  static fromJson (obj) {
+  static fromJSON (obj) {
     return new ScalableCuckooFilter(obj)
+  }
+
+  toCBOR(){
+    return abToB(cbor.encode(this.toJSON()))
+  }
+  static fromCBOR(buf){
+    let obj = cbor.decode(toAb(buf))
+    return ScalableCuckooFilter.fromJSON(obj)
   }
 }

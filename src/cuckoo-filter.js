@@ -1,4 +1,7 @@
 'use strict'
+const cbor = require('cbor-js')
+const toAb = require('to-array-buffer')
+const abToB = require('arraybuffer-to-buffer')
 const Bucket = require('./bucket')
 const Fingerprint = require('./fingerprint')
 const util = require('./util')
@@ -12,21 +15,33 @@ module.exports = class CuckooFilter {
   constructor (cfSize, bSize, fpSize) {
     if (!Buffer.isBuffer(cfSize) && typeof cfSize === 'object') {
       if (cfSize.cfSize) {
+        if (!Number.isInteger(cfSize.cfSize)) {
+          throw new TypeError('Invalid Cuckoo Filter Size')
+        }
         _cfSize.set(this, cfSize.cfSize)
       } else {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
       if (cfSize.bSize) {
+        if (!Number.isInteger(cfSize.bSize)) {
+          throw new TypeError('Invalid Bucket Size')
+        }
         _bSize.set(this, cfSize.bSize)
       } else {
         throw new TypeError('Invalid Bucket Size')
       }
       if (cfSize.fpSize) {
+        if (!Number.isInteger(cfSize.fpSize) || cfSize.fpSize > 64) {
+          throw new TypeError('Invalid Fingerprint Size')
+        }
         _fpSize.set(this, cfSize.fpSize)
       } else {
         throw new TypeError('Invalid Fingerprint Size')
       }
       if (cfSize.count) {
+        if (!Number.isInteger(cfSize.count)) {
+          throw new TypeError('Invalid Count')
+        }
         _count.set(this, cfSize.count)
       } else {
         throw new TypeError('Invalid Count')
@@ -57,7 +72,7 @@ module.exports = class CuckooFilter {
       if (!Number.isInteger(cfSize)) {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
-      if (!Number.isInteger(fpSize) && fpSize < 64) {
+      if (!Number.isInteger(fpSize) || fpSize > 64) {
         throw new TypeError('Invalid Fingerprint Size')
       }
       if (!Number.isInteger(bSize)) {
@@ -201,5 +216,12 @@ module.exports = class CuckooFilter {
 
   static fromJSON (obj) {
     return new CuckooFilter(obj)
+  }
+  toCBOR(){
+    return abToB(cbor.encode(this.toJSON()))
+  }
+  static fromCBOR(buf){
+    let obj = cbor.decode(toAb(buf))
+    return CuckooFilter.fromJSON(obj)
   }
 }

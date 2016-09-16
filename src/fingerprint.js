@@ -1,11 +1,15 @@
 'use strict'
+let toBuffer = require('typedarray-to-buffer')
 const util = require('./util')
 let _fp = new WeakMap()
 module.exports = class Fingerprint {
   constructor (buf, fpSize) {
     if (!Buffer.isBuffer(buf) && typeof buf === 'object') {
       if (buf.fp) {
-        _fp.set(this, buf.fp)
+        if(!( buf.fp instanceof Uint8Array )){
+          throw new TypeError('Invalid Fingerprint')
+        }
+        _fp.set(this, toBuffer(buf.fp))
       } else {
         throw new TypeError('Invalid Fingerprint')
       }
