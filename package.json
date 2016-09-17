@@ -1,15 +1,25 @@
 {
   "name": "cuckoo-filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cuckoo Filter: Better Than Bloom",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "discard": "git reset --hard && git clean -f -d"
   },
   "author": "Vijayee Kulkaa",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vijayee/cuckoo-filter.git"
+  },
   "dependencies": {
-    "fnv-plus": "^1.2.12"
+    "arraybuffer-to-buffer": "0.0.4",
+    "cbor": "^1.0.6",
+    "cbor-js": "^0.1.0",
+    "fnv-plus": "^1.2.12",
+    "to-array-buffer": "^1.2.0",
+    "typedarray-to-buffer": "^3.1.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
