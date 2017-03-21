@@ -1,4 +1,7 @@
 #Cuckoo Filters
+
+https://www.cs.cmu.edu/~dga/papers/cuckoo-conext2014.pdf
+
 ##Abstract
 In many networking systems, Bloom filters are used for highspeed
 set membership tests. They permit a small fraction

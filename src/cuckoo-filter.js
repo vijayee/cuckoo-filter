@@ -14,7 +14,7 @@ let _count = new WeakMap()
 module.exports = class CuckooFilter {
   constructor (cfSize, bSize, fpSize) {
     if (!Buffer.isBuffer(cfSize) && typeof cfSize === 'object') {
-      if (cfSize.cfSize) {
+      if (!isNaN(cfSize.cfSize)) {
         if (!Number.isInteger(cfSize.cfSize)) {
           throw new TypeError('Invalid Cuckoo Filter Size')
         }
@@ -22,7 +22,7 @@ module.exports = class CuckooFilter {
       } else {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
-      if (cfSize.bSize) {
+      if (!isNaN(cfSize.bSize)) {
         if (!Number.isInteger(cfSize.bSize)) {
           throw new TypeError('Invalid Bucket Size')
         }
@@ -30,7 +30,7 @@ module.exports = class CuckooFilter {
       } else {
         throw new TypeError('Invalid Bucket Size')
       }
-      if (cfSize.fpSize) {
+      if (!isNaN(cfSize.fpSize)) {
         if (!Number.isInteger(cfSize.fpSize) || cfSize.fpSize > 64) {
           throw new TypeError('Invalid Fingerprint Size')
         }
@@ -38,11 +38,12 @@ module.exports = class CuckooFilter {
       } else {
         throw new TypeError('Invalid Fingerprint Size')
       }
-      if (cfSize.count) {
+      if (!isNaN(cfSize.count)) {
         if (!Number.isInteger(cfSize.count)) {
           throw new TypeError('Invalid Count')
+        } else {
+          _count.set(this, cfSize.count)
         }
-        _count.set(this, cfSize.count)
       } else {
         throw new TypeError('Invalid Count')
       }
@@ -149,6 +150,9 @@ module.exports = class CuckooFilter {
     }
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('Invalid Buffer')
+    }
+    if (!this.count) {
+      return false
     }
     let fpSize = _fpSize.get(this)
     let cfSize = _cfSize.get(this)

@@ -12,7 +12,7 @@ let _fpSize = new WeakMap()
 module.exports = class ScalableCuckooFilter {
   constructor (cfSize, bSize, fpSize, scale) {
     if (typeof cfSize === 'object') {
-      if (cfSize.cfSize) {
+      if (!isNaN(cfSize.cfSize)) {
         if (!Number.isInteger(cfSize.cfSize)) {
           throw new TypeError('Invalid Cuckoo Filter Size')
         }
@@ -20,7 +20,7 @@ module.exports = class ScalableCuckooFilter {
       } else {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
-      if (cfSize.bSize) {
+      if (!isNaN(cfSize.bSize)) {
         if (!Number.isInteger(cfSize.bSize)) {
           throw new TypeError('Invalid Bucket Size')
         }
@@ -28,7 +28,7 @@ module.exports = class ScalableCuckooFilter {
       } else {
         throw new TypeError('Invalid Bucket Size')
       }
-      if (cfSize.fpSize) {
+      if (!isNaN(cfSize.fpSize)) {
         if (!Number.isInteger(cfSize.fpSize) || cfSize.fpSize > 64) {
           throw new TypeError('Invalid Fingerprint Size')
         }
@@ -36,7 +36,7 @@ module.exports = class ScalableCuckooFilter {
       } else {
         throw new TypeError('Invalid Fingerprint Size')
       }
-      if (cfSize.scale) {
+      if (!isNaN(cfSize.scale)) {
         if (!Number.isInteger(cfSize.scale)) {
           throw new TypeError('Invalid Scale')
         }

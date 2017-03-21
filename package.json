@@ -1,6 +1,6 @@
 {
   "name": "cuckoo-filter",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Cuckoo Filter: Better Than Bloom",
   "main": "src/index.js",
   "scripts": {
@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "arraybuffer-to-buffer": "0.0.4",
-    "cbor": "^1.0.6",
     "cbor-js": "^0.1.0",
     "fnv-plus": "^1.2.12",
     "to-array-buffer": "^1.2.0",
