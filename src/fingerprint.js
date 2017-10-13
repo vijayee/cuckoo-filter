@@ -5,11 +5,10 @@ let _fp = new WeakMap()
 module.exports = class Fingerprint {
   constructor (buf, fpSize) {
     if (!Buffer.isBuffer(buf) && typeof buf === 'object') {
-      if (buf.fp) {
-        if(!( buf.fp instanceof Uint8Array )){
-          throw new TypeError('Invalid Fingerprint')
-        }
+      if (buf.fp && buf.fp instanceof Uint8Array) {
         _fp.set(this, toBuffer(buf.fp))
+      } else if (validFPObject(buf.fp)) {
+        _fp.set(this, Buffer.from(buf.fp.data));
       } else {
         throw new TypeError('Invalid Fingerprint')
       }
@@ -54,4 +53,8 @@ module.exports = class Fingerprint {
   static fromJSON (obj) {
     return new Fingerprint(obj)
   }
+}
+
+function validFPObject(fp) {
+    return fp.type === 'Buffer' && Array.isArray(fp.data);
 }
