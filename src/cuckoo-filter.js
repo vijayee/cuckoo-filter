@@ -151,7 +151,7 @@ module.exports = class CuckooFilter {
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('Invalid Buffer')
     }
-    if (!this.count) {
+    if (!this.number) {
       return false
     }
     let fpSize = _fpSize.get(this)
@@ -159,8 +159,15 @@ module.exports = class CuckooFilter {
     let buckets = _buckets.get(this)
     let fingerprint = new Fingerprint(buf, fpSize)
     let j = util.hash(buf) % cfSize
-    let k = (j ^ fingerprint.hash()) % cfSize
-    return (buckets[ j ] ? buckets[ j ].contains(fingerprint) : false) || ( buckets[ k ] ? buckets[ k ].contains(fingerprint) : false)
+    let inJ = buckets[ j ] ? buckets[ j ].contains(fingerprint) : false
+
+    if (inJ) {
+      return inJ
+    } else {
+      let k = (j ^ fingerprint.hash()) % cfSize
+      let inK = buckets[ k ] ? buckets[ k ].contains(fingerprint) : false
+      return inK
+    }
   }
 
   remove (buf) {
@@ -175,17 +182,22 @@ module.exports = class CuckooFilter {
     }
     let fpSize = _fpSize.get(this)
     let cfSize = _cfSize.get(this)
-    let count = _count.get(this)
     let buckets = _buckets.get(this)
     let fingerprint = new Fingerprint(buf, fpSize)
     let j = util.hash(buf) % cfSize
-    let k = (j ^ fingerprint.hash()) % cfSize
-    if ((buckets[ j ] ? buckets[ j ].remove(fingerprint) : false ) || (buckets[ k ] ? buckets[ k ].remove(fingerprint) : false)) {
-      count--
-      _count.set(this, count)
-      return true
+    let inJ = buckets[ j ] ? buckets[ j ].remove(fingerprint) : false
+
+    if (inJ) {
+      return inJ
+    } else {
+      let k = (j ^ fingerprint.hash()) % cfSize
+      let inK = buckets[ k ] ? buckets[ k ].remove(fingerprint) : false
+      if (inK) {
+        return inK
+      } else {
+        return false
+      }
     }
-    return false
   }
 
   get count () {
