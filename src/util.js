@@ -15,7 +15,7 @@ function fnvHash (buf) {
     throw new TypeError("Invalid Buffer")
   }
   let hash = fnv.hash(buf.toString(), 64)
-  return new Buffer(hash.hex(), 'hex')
+  return Buffer.from(hash.hex(), 'hex')
 }
 
 function getRandomInt (min, max) {
@@ -29,7 +29,7 @@ function numberToBuffer (num) {
   if (hex % 2 == 1) {
     hex = '0' + hex
   }
-  return new Buffer(hex)
+  return Buffer.from(hex)
 }
 module.exports = {
   hash: hash,

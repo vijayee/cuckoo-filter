@@ -97,7 +97,7 @@ module.exports = class CuckooFilter {
       buf = util.numberToBuffer(buf)
     }
     if (typeof buf === 'string') {
-      buf = new Buffer(buf)
+      buf = Buffer.from(buf)
     }
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('Invalid Buffer')
@@ -146,13 +146,10 @@ module.exports = class CuckooFilter {
       buf = util.numberToBuffer(buf)
     }
     if (typeof buf === 'string') {
-      buf = new Buffer(buf)
+      buf = Buffer.from(buf)
     }
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('Invalid Buffer')
-    }
-    if (!this.number) {
-      return false
     }
     let fpSize = _fpSize.get(this)
     let cfSize = _cfSize.get(this)
@@ -160,7 +157,6 @@ module.exports = class CuckooFilter {
     let fingerprint = new Fingerprint(buf, fpSize)
     let j = util.hash(buf) % cfSize
     let inJ = buckets[ j ] ? buckets[ j ].contains(fingerprint) : false
-
     if (inJ) {
       return inJ
     } else {
@@ -175,7 +171,7 @@ module.exports = class CuckooFilter {
       buf = util.numberToBuffer(buf)
     }
     if (typeof buf === 'string') {
-      buf = new Buffer(buf)
+      buf = Buffer.from(buf)
     }
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('Invalid Buffer')
