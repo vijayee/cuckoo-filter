@@ -128,7 +128,7 @@ module.exports = class CuckooFilter {
     }
     for (let n = 0; n < maxCuckooCount; n++) {
       fingerprint = buckets[ i ].swap(fingerprint)
-      i ^= fingerprint.hash() % cfSize
+      i = (i ^ fingerprint.hash()) % cfSize
       if (!buckets[ i ]) {
         buckets[ i ] = new Bucket(bSize)
       }
@@ -136,6 +136,8 @@ module.exports = class CuckooFilter {
         count++
         _count.set(this, count)
         return true
+      } else {
+        continue
       }
     }
     return false

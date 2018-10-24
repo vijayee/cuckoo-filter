@@ -1,6 +1,6 @@
 {
   "name": "cuckoo-filter",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Cuckoo Filter: Better Than Bloom",
   "main": "src/index.js",
   "scripts": {
