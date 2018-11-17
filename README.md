@@ -28,7 +28,7 @@ npm install cuckoo-filter
 ## Usage
 ```javascript
 const CuckooFilter = require('cuckoo-filter').CuckooFilter
-const ScalableFilter = require('cuckoo-filter').ScalableCuckooFilter
+const ScalableCuckooFilter = require('cuckoo-filter').ScalableCuckooFilter
 
 let cuckoo= new CuckooFilter(200, 4, 2) // (Size, Bucket Size, Finger Print Size)
 
