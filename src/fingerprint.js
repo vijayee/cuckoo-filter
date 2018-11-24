@@ -24,7 +24,7 @@ module.exports = class Fingerprint {
         throw new TypeError('Invalid Fingerprint Size')
       }
       let fnv = util.fnvHash(buf)
-      let fp = Buffer.alloc(fpSize)
+      let fp = Buffer.alloc(fpSize, 0)
       for (let i = 0; i < fp.length; i++) {
         fp[ i ] = fnv[ i ]
       }

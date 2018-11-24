@@ -23,6 +23,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "elapsed-time": "0.0.1",
-    "mocha": "^3.0.2"
+    "mocha": "^5.2.0"
   }
 }

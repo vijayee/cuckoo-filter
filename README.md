@@ -19,6 +19,9 @@ lower space overhead than space-optimized Bloom filters.
 Our experimental results also show that cuckoo filters outperform
 previous data structures that extend Bloom filters to
 support deletions substantially in both time and space.
+# Note
+ Potentially breaking changes for backward compatability in version 1.1 with prior versions. 
+ If you are using previously serialized cuckoo filters from other versions they may need to be rebuilt with the current version. 
 
 ## Install
 ```
@@ -28,7 +31,7 @@ npm install cuckoo-filter
 ## Usage
 ```javascript
 const CuckooFilter = require('cuckoo-filter').CuckooFilter
-const ScalableFilter = require('cuckoo-filter').ScalableCuckooFilter
+const ScalableCuckooFilter = require('cuckoo-filter').ScalableCuckooFilter
 
 let cuckoo= new CuckooFilter(200, 4, 2) // (Size, Bucket Size, Finger Print Size)
 
