@@ -1,4 +1,4 @@
-const fnv = require('fnv-plus')
+const fnv = require('fnv32')
 
 function hash (buf) {
   if (!Buffer.isBuffer(buf)) {
@@ -14,8 +14,7 @@ function fnvHash (buf) {
   if (!Buffer.isBuffer(buf)) {
     throw new TypeError("Invalid Buffer")
   }
-  let hash = fnv.hash(buf.toString(), 64)
-  return Buffer.from(hash.hex(), 'hex')
+  return fnv.toBufferLE(fnv.fnv_1a(buf))
 }
 
 function getRandomInt (min, max) {
