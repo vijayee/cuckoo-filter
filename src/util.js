@@ -28,7 +28,7 @@ function numberToBuffer (num) {
   if (hex % 2 == 1) {
     hex = '0' + hex
   }
-  return Buffer.from(hex)
+  return Buffer.from(hex, 'hex')
 }
 module.exports = {
   hash: hash,
