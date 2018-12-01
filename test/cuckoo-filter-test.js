@@ -1,27 +1,39 @@
 const crypto = require('crypto')
 const CuckooFilter = require('../src/cuckoo-filter')
-let keys =[]
-let cuckoo = new CuckooFilter(500, 6 , 4)
-for(let i = 0; i < 1500; i++ ){
-  let rand = crypto.randomBytes(36)
-  keys.push(rand)
-  if(!cuckoo.add(rand)){
-    console.log(`rejected ${rand}`)
-  } else {
-    keys.push(rand)
-    if (!cuckoo.contains(rand)) {
-      console.log(`missing ${rand.toString('hex')}`)
+const expect = require('chai').expect
+describe('Test Cuckoo Filter', function () {
+  let keys =[]
+  let cuckoo = new CuckooFilter(1500, 6 , 4)
+  let cuckoo2
+  it('Add 1500 keys', function() {
+    for(let i = 0; i < 1500; i++ ) {
+      let rand = crypto.randomBytes(36)
+      keys.push(rand)
+      let result = cuckoo.add(rand)
+      expect(result).to.equal(true)
     }
+  })
+  it('Check 1500 keys are in filter', function () {
+    for(let key of keys) {
+      expect(cuckoo.contains(key)).to.equal(true)
+    }
+  })
+  it('Serialize Cuckoo filter', function () {
+    let buf = cuckoo.toCBOR()
+    expect(Buffer.isBuffer(buf)).to.equal(true)
+    cuckoo2 = CuckooFilter.fromCBOR(buf)
+    expect(cuckoo2 instanceof CuckooFilter).to.equal(true)
+  })
+  it('Check Check 1500 keys are in Serialized Cuckoo filter', function () {
     for (let key of keys) {
-      if (!cuckoo.contains(key)) {
-        console.log(`key ${key.toString('hex')} is now missing age ${rand.toString('hex')}`)
-        process.exit()
-      }
+      expect(cuckoo2.contains(key)).to.equal(true)
     }
-  }
-}
+  })
+})
 
-console.log(cuckoo.reliable)
+
+
+//console.log(cuckoo.reliable)
 /*
 console.log(cuckoo.contains(1))
 let cbor = cuckoo.toCBOR()
