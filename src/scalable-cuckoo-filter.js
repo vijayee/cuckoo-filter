@@ -1,7 +1,5 @@
 'use strict'
 const cbor = require('cbor-js')
-const toAb = require('to-array-buffer')
-const abToB = require('arraybuffer-to-buffer')
 const CuckooFilter = require('./cuckoo-filter')
 let _filterSeries = new WeakMap()
 let _scale = new WeakMap()
@@ -161,10 +159,10 @@ module.exports = class ScalableCuckooFilter {
   }
 
   toCBOR(){
-    return abToB(cbor.encode(this.toJSON()))
+    return Buffer.from(cbor.encode(this.toJSON()))
   }
   static fromCBOR(buf){
-    let obj = cbor.decode(toAb(buf))
+    let obj = cbor.decode(buf.buffer)
     return ScalableCuckooFilter.fromJSON(obj)
   }
 }

@@ -12,6 +12,7 @@ describe('Test Cuckoo Filter', function () {
       let result = cuckoo.add(rand)
       expect(result).to.equal(true)
     }
+    expect(cuckoo.count).to.equal(1500)
   })
   it('Check 1500 keys are in filter', function () {
     for(let key of keys) {

@@ -1,7 +1,5 @@
 'use strict'
 const cbor = require('cbor-js')
-const toAb = require('to-array-buffer')
-const abToB = require('arraybuffer-to-buffer')
 const Bucket = require('./bucket')
 const Fingerprint = require('./fingerprint')
 const util = require('./util')
@@ -73,8 +71,11 @@ module.exports = class CuckooFilter {
       if (!Number.isInteger(cfSize)) {
         throw new TypeError('Invalid Cuckoo Filter Size')
       }
-      if (!Number.isInteger(fpSize) || fpSize > 64) {
+      if (!Number.isInteger(fpSize)) {
         throw new TypeError('Invalid Fingerprint Size')
+      }
+      if (fpSize > 4) {
+        throw new TypeError('Fingerprint is larger than 4 bytes')
       }
       if (!Number.isInteger(bSize)) {
         throw new TypeError('Invalid Bucket Size')
@@ -232,10 +233,10 @@ module.exports = class CuckooFilter {
     return new CuckooFilter(obj)
   }
   toCBOR(){
-    return abToB(cbor.encode(this.toJSON()))
+    return Buffer.from(cbor.encode(this.toJSON()))
   }
   static fromCBOR(buf){
-    let obj = cbor.decode(toAb(buf))
+    let obj = cbor.decode(buf.buffer)
     return CuckooFilter.fromJSON(obj)
   }
 }

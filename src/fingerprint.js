@@ -1,15 +1,14 @@
 'use strict'
-let toBuffer = require('typedarray-to-buffer')
 const util = require('./util')
 let _fp = new WeakMap()
 module.exports = class Fingerprint {
   constructor (buf, fpSize) {
     if (!Buffer.isBuffer(buf) && typeof buf === 'object') {
       if (buf.fp) {
-        if(!( buf.fp instanceof Uint8Array )){
+        if(typeof buf.fp !== 'object') {
           throw new TypeError('Invalid Fingerprint')
         }
-        _fp.set(this, toBuffer(buf.fp))
+        _fp.set(this, Buffer.from(buf.fp))
       } else {
         throw new TypeError('Invalid Fingerprint')
       }
@@ -20,8 +19,11 @@ module.exports = class Fingerprint {
       if (!Buffer.isBuffer(buf)) {
         throw new TypeError("Invalid Buffer")
       }
-      if (!Number.isInteger(fpSize) && fpSize < 64) {
+      if (!Number.isInteger(fpSize)) {
         throw new TypeError('Invalid Fingerprint Size')
+      }
+      if (fpSize > 4) {
+        throw new TypeError('Fingerprint is larger than 4 bytes')
       }
       let fnv = util.fnvHash(buf)
       let fp = Buffer.alloc(fpSize, 0)
@@ -43,12 +45,12 @@ module.exports = class Fingerprint {
   equals (fingerprint) {
     let fp1 = _fp.get(this)
     let fp2 = _fp.get(fingerprint)
-    return Buffer.compare(fp1, fp2) === 0
+    return fp1.equals(fp2)
   }
 
   toJSON () {
     let fp = _fp.get(this)
-    return { fp: fp }
+    return { fp: fp.toJSON() }
   }
 
   static fromJSON (obj) {
