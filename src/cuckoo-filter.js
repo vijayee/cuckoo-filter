@@ -1,5 +1,5 @@
 'use strict'
-const cbor = require('cbor-js')
+const cbor = require('borc')
 const Bucket = require('./bucket')
 const Fingerprint = require('./fingerprint')
 const util = require('./util')
@@ -232,11 +232,11 @@ module.exports = class CuckooFilter {
   static fromJSON (obj) {
     return new CuckooFilter(obj)
   }
-  toCBOR(){
+  toCBOR () {
     return Buffer.from(cbor.encode(this.toJSON()))
   }
-  static fromCBOR(buf){
-    let obj = cbor.decode(buf.buffer)
+  static fromCBOR (buf) {
+    let obj = cbor.decodeFirst(buf)
     return CuckooFilter.fromJSON(obj)
   }
 }
